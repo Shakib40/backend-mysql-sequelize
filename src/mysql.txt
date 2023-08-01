@@ -1,0 +1,41 @@
+const SQL = 'SELECT * FROM users LIMIT ?, ?';
+DATABASE.query(SQL, [startIndex, pageSize], (error, results) => {
+
+
+
+// Count total number of users
+const countSQL = 'SELECT COUNT(*) AS count FROM users';
+DATABASE.query(countSQL, (error, countResult) => {
+
+
+// Check if email already exists
+const checkEmailSQL = 'SELECT * FROM users WHERE email = ?';
+DATABASE.query(checkEmailSQL, [email], async (error, results) => {
+
+
+// Save the user to the database
+const insertUserSQL = 'INSERT INTO users (email, password) VALUES (?, ?)';
+DATABASE.query(insertUserSQL, [email, hashedPassword], async (error, results) => {
+
+
+# ADD Extra columns to the table
+ALTER TABLE users
+ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'user';
+
+# CREATE TABLE
+CREATE TABLE books (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  author VARCHAR(255) NOT NULL,
+  publication_date DATE,
+  price DECIMAL(10, 2) NOT NULL,
+  total_books_left INT NOT NULL,
+  is_available BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+# DROP default
+ALTER TABLE books
+ALTER COLUMN category DROP DEFAULT;
