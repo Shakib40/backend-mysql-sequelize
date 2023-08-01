@@ -12,8 +12,11 @@ app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 // ROUTES
 const authRoutes = require("./src/routes/auth.route");
 const userRoutes = require("./src/routes/user.route");
+const bookRoutes = require("./src/routes/book.route");
+
 app.use("/", authRoutes);
 app.use("/user", userRoutes);
+app.use("/book", bookRoutes);
 
 sequelizeConnection
   .sync()
