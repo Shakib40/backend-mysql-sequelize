@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 
 const DATABASE = require("../config/database");
 const { verifyToken } = require("../middleware/middleware");
