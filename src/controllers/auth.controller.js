@@ -1,12 +1,11 @@
 const express = require("express");
-const router = express.Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { verifyToken } = require("../middleware/middleware");
 const { secret, expiresIn } = require("../config/config");
 const User = require("../models/user.model"); // Import the Sequelize model
 
-router.post("/add", async (request, response) => {
+// post
+exports.SIGNUP = async (request, response) => {
   const { email, password, role } = request.body;
 
   try {
@@ -55,9 +54,10 @@ router.post("/add", async (request, response) => {
       status: "FAILED",
     });
   }
-});
+};
 
-router.post("/login", async (req, response) => {
+// post
+exports.LOGIN = async (req, response) => {
   const { email, password } = req.body;
 
   try {
@@ -92,9 +92,10 @@ router.post("/login", async (req, response) => {
       status: "FAILED",
     });
   }
-});
+};
 
-router.get("/users/list", verifyToken, async (request, response) => {
+// get
+exports.GET_USER_LIST = async (request, response) => {
   const { page, limit } = request.query;
   const pageNumber = parseInt(page) || 1;
   const pageSize = parseInt(limit) || 10;
@@ -126,10 +127,132 @@ router.get("/users/list", verifyToken, async (request, response) => {
       status: "FAILED",
     });
   }
-});
+};
+
+// router.post("/add", async (request, response) => {
+//   const { email, password, role } = request.body;
+
+//   try {
+//     // Validate email format
+//     const emailRegex = /^\S+@\S+\.\S+$/;
+//     if (!emailRegex.test(email)) {
+//       return response.status(400).send({
+//         message: "Invalid email format",
+//         status: "FAILED",
+//       });
+//     }
+
+//     // Validate password requirements
+//     const passwordRegex =
+//       /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]).{6,}$/;
+//     if (!passwordRegex.test(password)) {
+//       return response.status(400).send({
+//         message:
+//           "Password should contain at least one uppercase letter, one lowercase letter, one digit, and one special character, and be at least 6 characters long",
+//         status: "FAILED",
+//       });
+//     }
+
+//     // Check if email already exists
+//     const existingUser = await User.findOne({ where: { email } });
+//     if (existingUser) {
+//       return response.status(409).send({
+//         message: "Email already exists",
+//         status: "FAILED",
+//       });
+//     }
+
+//     // Hash the password
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     // Save the user to the database
+//     await User.create({ email, password: hashedPassword, role });
+
+//     return response.status(200).send({
+//       status: "SUCCESS",
+//       message: "Added Successfully",
+//     });
+//   } catch (error) {
+//     return response.status(500).send({
+//       message: error.message,
+//       status: "FAILED",
+//     });
+//   }
+// });
+
+// router.post("/login", async (req, response) => {
+//   const { email, password } = req.body;
+
+//   try {
+//     // Find the user in the database
+//     const user = await User.findOne({ where: { email } });
+//     if (!user) {
+//       return response
+//         .status(401)
+//         .json({ message: "Email not found", status: "FAILED" });
+//     }
+
+//     const passwordMatch = await bcrypt.compare(password, user.password);
+
+//     if (!passwordMatch) {
+//       return response
+//         .status(401)
+//         .json({ message: "Password Did not match", status: "FAILED" });
+//     }
+
+//     // Generate a JWT token
+//     const token = jwt.sign({ userId: user.id }, secret, { expiresIn });
+
+//     // Return the token to the client
+//     response.status(200).json({
+//       token: token,
+//       status: "SUCCESS",
+//       user: user,
+//     });
+//   } catch (error) {
+//     return response.status(500).send({
+//       message: error.message,
+//       status: "FAILED",
+//     });
+//   }
+// });
+
+// router.get("/users/list", verifyToken, async (request, response) => {
+//   const { page, limit } = request.query;
+//   const pageNumber = parseInt(page) || 1;
+//   const pageSize = parseInt(limit) || 10;
+//   const startIndex = (pageNumber - 1) * pageSize;
+
+//   try {
+//     // Fetch users with pagination
+//     const users = await User.findAll({
+//       offset: startIndex,
+//       limit: pageSize,
+//     });
+
+//     // Count total number of users
+//     const totalCount = await User.count();
+//     const totalPages = Math.ceil(totalCount / pageSize);
+//     return response.status(200).send({
+//       status: "SUCCESS",
+//       data: users,
+//       pagination: {
+//         currentPage: pageNumber,
+//         pageSize: pageSize,
+//         totalCount: totalCount,
+//         totalPages: totalPages,
+//       },
+//     });
+//   } catch (error) {
+//     return response.status(500).send({
+//       message: error.message,
+//       status: "FAILED",
+//     });
+//   }
+// });
 
 // Export the router
-module.exports = router;
+// module.exports = router;
 
 // Register a new user
 // router.post("/add", async (request, response) => {

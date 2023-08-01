@@ -9,11 +9,11 @@ app.use(compression());
 app.use(bodyParser.json());
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
-// Changes
-const BOOK = require("./src/controllers/book.controller");
-const AUTH = require("./src/controllers/auth.controller");
-app.use("/book", BOOK);
-app.use("/", AUTH);
+// ROUTES
+const authRoutes = require("./src/routes/auth.route");
+const userRoutes = require("./src/routes/user.route");
+app.use("/", authRoutes);
+app.use("/user", userRoutes);
 
 sequelizeConnection
   .sync()

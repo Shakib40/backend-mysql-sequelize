@@ -1,0 +1,17 @@
+try {
+    // Find the user in the database
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return response
+        .status(401)
+        .json({ message: "Email not found", status: "FAILED" });
+    }
+
+    response.status(200).json(user);
+
+  } catch (error) {
+    return response.status(500).send({
+      message: error.message,
+      status: "FAILED",
+    });
+  }
