@@ -131,145 +131,58 @@ exports.DELETE_SINGLE_BOOK = async (request, response) => {
   }
 };
 
-// ADD BOOK
-// router.post("/add", verifyToken, async (request, response) => {
-//   const {
-//     title,
-//     author,
-//     publication_date,
-//     price,
-//     total_books_left,
-//     is_available,
-//     descriptions,
-//     category,
-//   } = request.body;
+exports.UPDATE_SINGLE_BOOK = async (request, response) => {
+  const id = request.params.id;
+  const {
+    title,
+    author,
+    price,
+    total_books_left,
+    is_available,
+    descriptions,
+    category,
+  } = request.body;
 
-//   // Validate input data
-//   if (!title) {
-//     return response.status(400).send({
-//       message: "Missing title required fields",
-//       status: "FAILED",
-//     });
-//   }
+  try {
+    // Find the book in the database
+    const book = await BOOK.findOne({ where: { id } });
+    if (!book) {
+      return response
+        .status(401)
+        .json({ message: "Book not found", status: "FAILED" });
+    }
 
-//   if (!author) {
-//     return response.status(400).send({
-//       message: "Missing author required fields",
-//       status: "FAILED",
-//     });
-//   }
+    // Find the book in the database
+    const isTitle = await BOOK.findOne({ where: { title } });
+    if (isTitle) {
+      return response
+        .status(401)
+        .json({ message: "Title already present", status: "FAILED" });
+    }
 
-//   if (!price) {
-//     return response.status(400).send({
-//       message: "Missing price required fields",
-//       status: "FAILED",
-//     });
-//   }
+    // Get the updated book information from the request body
 
-//   if (!total_books_left) {
-//     return response.status(400).send({
-//       message: "Missing total_books_left required fields",
-//       status: "FAILED",
-//     });
-//   }
+    // Apply updates to the user object
+    book.title = title || book.title; // If title is provided, update it; otherwise, keep the current value
+    book.author = author || book.author;
+    book.price = price || book.price;
+    book.total_books_left = total_books_left || book.total_books_left;
+    book.is_available = is_available || book.is_available;
+    book.descriptions = descriptions || book.descriptions;
+    book.category = category || book.category;
+    book.addedBy = book.addedBy;
 
-//   if (!descriptions) {
-//     return response.status(400).send({
-//       message: "Missing descriptions required fields",
-//       status: "FAILED",
-//     });
-//   }
+    // Save the updated user object back to the database
+    await book.save();
 
-//   if (!category) {
-//     return response.status(400).send({
-//       message: "Missing category required fields",
-//       status: "FAILED",
-//     });
-//   }
-
-//   // Save the book to the database
-//   const insertBookSQL =
-//     "INSERT INTO books (title, author, publication_date, price, total_books_left, descriptions, category, is_available) VALUES (?, ?, ?, ?, ?, ?, ?, true)";
-//   DATABASE.query(
-//     insertBookSQL,
-//     [
-//       title,
-//       author,
-//       publication_date,
-//       price,
-//       total_books_left,
-//       descriptions,
-//       category,
-//       is_available,
-//     ],
-//     async (error, results) => {
-//       if (error) {
-//         return response.status(500).send({
-//           message: error.message,
-//           status: "FAILED",
-//         });
-//       }
-//       return response.status(200).send({
-//         status: "SUCCESS",
-//         message: "Book added successfully",
-//       });
-//     }
-//   );
-// });
-
-// SINGLE DETAILS
-// router.get("/:id", verifyToken, async (request, response) => {
-//   const bookId = request.params.id;
-
-//   const getBookSQL = "SELECT * FROM books WHERE id = ?";
-//   DATABASE.query(getBookSQL, [bookId], (error, results) => {
-//     if (error) {
-//       return response.status(500).send({
-//         message: error.message,
-//         status: "FAILED",
-//       });
-//     }
-
-//     if (results.length === 0) {
-//       return response.status(404).send({
-//         message: "Book not found",
-//         status: "FAILED",
-//       });
-//     }
-
-//     return response.status(200).send({
-//       status: "SUCCESS",
-//       data: results[0],
-//     });
-//   });
-// });
-
-// DELETE
-// router.delete("/:id", verifyToken, async (request, response) => {
-//   const bookId = request.params.id;
-
-//   const deleteBookSQL = "DELETE FROM books WHERE id = ?";
-//   DATABASE.query(deleteBookSQL, [bookId], (error, results) => {
-//     if (error) {
-//       return response.status(500).send({
-//         message: error.message,
-//         status: "FAILED",
-//       });
-//     }
-
-//     if (results.affectedRows === 0) {
-//       return response.status(404).send({
-//         message: "Book not found",
-//         status: "FAILED",
-//       });
-//     }
-
-//     return response.status(200).send({
-//       status: "SUCCESS",
-//       message: "Book deleted successfully",
-//     });
-//   });
-// });
-
-// Export the router
-// module.exports = router;
+    response.status(200).send({
+      book: book,
+      status: "SUCCESS",
+    });
+  } catch (error) {
+    return response.status(500).send({
+      message: error.message,
+      status: "FAILED",
+    });
+  }
+};

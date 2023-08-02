@@ -17,4 +17,7 @@ router.get("/:id", verifyToken, bookController.GET_SINGLE_BOOK_DETAILS);
 //  /book/1212
 router.delete("/:id", verifyToken, bookController.DELETE_SINGLE_BOOK);
 
+//  /book/1212
+router.put("/:id", verifyToken, bookController.UPDATE_SINGLE_BOOK);
+
 module.exports = router;
