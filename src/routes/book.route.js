@@ -2,7 +2,7 @@ const path = require("path");
 const express = require("express");
 const router = express.Router();
 
-const { verifyToken } = require("../middleware/middleware");
+const { verifyToken } = require("../middleware/verifyToken");
 const bookController = require("../controllers/book.controller");
 
 //  /book/list

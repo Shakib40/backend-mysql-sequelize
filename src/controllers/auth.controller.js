@@ -1,7 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { secret, expiresIn } = require("../config/config");
+const { secret, expiresIn } = require("../helper/config");
 const User = require("../models/user.model"); // Import the Sequelize model
 
 // post
@@ -89,40 +89,5 @@ exports.LOGIN = async (req, response, next) => {
       error.statusCode = 500;
     }
     next(error);
-  }
-};
-
-// get
-exports.GET_USER_LIST = async (request, response) => {
-  const { page, limit } = request.query;
-  const pageNumber = parseInt(page) || 1;
-  const pageSize = parseInt(limit) || 10;
-  const startIndex = (pageNumber - 1) * pageSize;
-
-  try {
-    // Fetch users with pagination
-    const users = await User.findAll({
-      offset: startIndex,
-      limit: pageSize,
-    });
-
-    // Count total number of users
-    const totalCount = await User.count();
-    const totalPages = Math.ceil(totalCount / pageSize);
-    return response.status(200).send({
-      status: "SUCCESS",
-      data: users,
-      pagination: {
-        currentPage: pageNumber,
-        pageSize: pageSize,
-        totalCount: totalCount,
-        totalPages: totalPages,
-      },
-    });
-  } catch (error) {
-    return response.status(500).send({
-      message: error.message,
-      status: "FAILED",
-    });
   }
 };

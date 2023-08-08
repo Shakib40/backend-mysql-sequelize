@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { secret } = require("../config/config");
+const { secret } = require("../helper/config");
 
 // Middleware for token verification
 const verifyToken = (request, response, next) => {
@@ -10,14 +10,16 @@ const verifyToken = (request, response, next) => {
     request.headers.authorization.split(" ")[1];
 
   if (!token) {
-    return response.status(401).json({ message: "No token provided" });
+    const error = new Error("Not authenticated.");
+    error.statusCode = 401;
+    throw error;
   }
 
   jwt.verify(token, secret, (error, decoded) => {
     if (error) {
-      return response
-        .status(403)
-        .json({ message: "Failed to authenticate token" });
+      const error = new Error("Failed to authenticate token.");
+      error.statusCode = 403;
+      throw error;
     }
     request.userId = decoded.userId;
     next();
