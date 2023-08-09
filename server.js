@@ -54,10 +54,12 @@ app.use((req, res, next) => {
 const authRoutes = require("./src/routes/auth.route");
 const userRoutes = require("./src/routes/user.route");
 const bookRoutes = require("./src/routes/book.route");
+const productRoutes = require("./src/routes/product.route");
 
 app.use("/", authRoutes);
 app.use("/user", userRoutes);
 app.use("/book", bookRoutes);
+app.use("/product", productRoutes);
 
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
