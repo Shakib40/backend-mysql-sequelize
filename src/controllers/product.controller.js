@@ -36,42 +36,46 @@ exports.GET_ALL_PRODUCTS = async (request, response, next) => {
 
 exports.ADD_PRODUCT = async (request, response, next) => {
   const {
-    title,
-    author,
-    price,
-    total_books_left,
-    is_available,
-    descriptions,
+    name,
     category,
-    addedBy,
-    createdAt,
-    updatedAt,
+    price,
+    currency,
+    descriptions,
+    features,
+    images,
+    ratings,
+    totalItems,
+    availability,
+    variants,
+    seller,
   } = request.body;
 
   try {
     // Find the Product name in the database
-    const isProduct = await PRODUCT.findOne({ where: { title } });
+    const isProduct = await PRODUCT.findOne({ where: { name } });
     if (isProduct) {
-      const error = new Error("Title.");
+      const error = new Error("Name already exist.");
       error.statusCode = 422;
       throw error;
     }
 
     // Save the Product to the database
     const product = await PRODUCT.create({
-      title,
-      author,
-      price,
-      total_books_left,
-      is_available,
-      descriptions,
+      name,
       category,
-      addedBy,
-      createdAt,
-      updatedAt,
+      price,
+      currency,
+      descriptions,
+      features,
+      images,
+      ratings,
+      totalItems,
+      availability,
+      variants,
+      seller,
     });
 
-    return response.status(200).send({
+    return response.status(201).send({
       data: product,
       status: "SUCCESS",
       message: "Added Successfully",
@@ -89,7 +93,7 @@ exports.GET_SINGLE_PRODUCT_DETAILS = async (request, response, next) => {
 
   try {
     // Find the product in the database
-    const product = await PRODUCT.findOne({ where: { id } });
+    const product = await PRODUCT.findOne({ where: { product_id: id } });
     if (!product) {
       const error = new Error("Product could not be found.");
       error.statusCode = 401;

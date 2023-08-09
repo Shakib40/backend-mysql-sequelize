@@ -64,6 +64,11 @@ const PRODUCT = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+
+    seller: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   },
   {
     timestamps: true,
